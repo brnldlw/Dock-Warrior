@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
-import { User, Star, Clock, Shield, DollarSign, Trophy, Zap, ChevronRight } from 'lucide-react'
+import { useSubscription } from '../hooks/useSubscription'
+import { User, Star, Clock, Shield, DollarSign, Zap, Crown } from 'lucide-react'
 import './Profile.css'
 
 const BADGES = [
@@ -23,6 +24,7 @@ function formatMoney(minutes) {
 
 export default function Profile() {
   const { user, signOut } = useAuth()
+  const { isPro, subscription } = useSubscription()
   const navigate = useNavigate()
   const [reviews, setReviews] = useState([])
   const [logs, setLogs] = useState([])
@@ -56,9 +58,17 @@ export default function Profile() {
           <User size={32} />
         </div>
         <div className="profile-info">
-          <h1 className="profile-name">{user?.user_metadata?.full_name || 'Warrior'}</h1>
+          <h1 className="profile-name">
+            {user?.user_metadata?.full_name || 'Warrior'}
+            {isPro && <span className="pro-crown"><Crown size={20} /> PRO</span>}
+          </h1>
           <p className="profile-email">{user?.email}</p>
           <div className="profile-badges-row">
+            {isPro && (
+              <span className="badge badge-orange">
+                <Crown size={12} /> Pro Member
+              </span>
+            )}
             {earnedBadges.map(b => (
               <span key={b.id} className="badge badge-orange" title={b.desc}>
                 {b.icon} {b.label}
@@ -67,14 +77,32 @@ export default function Profile() {
           </div>
         </div>
         <div className="profile-actions">
-          <Link to="/pricing" className="btn btn-primary btn-sm">
-            <Zap size={14} /> Go Pro
-          </Link>
+          {!isPro && (
+            <Link to="/pricing" className="btn btn-primary btn-sm">
+              <Zap size={14} /> Go Pro
+            </Link>
+          )}
+          {isPro && (
+            <div className="pro-status-badge">
+              <Crown size={14} /> Pro Active
+            </div>
+          )}
           <button className="btn btn-secondary btn-sm" onClick={async () => { await signOut(); navigate('/') }}>
             Sign Out
           </button>
         </div>
       </div>
+
+      {/* PRO UPSELL if not pro */}
+      {!isPro && (
+        <div className="pro-upsell-bar">
+          <Zap size={18} />
+          <div>
+            <strong>Upgrade to Pro for $9/month</strong> — Unlimited reviews, PDF detention invoices, route alerts, safety SMS and more.
+          </div>
+          <Link to="/pricing" className="btn btn-primary btn-sm">Upgrade Now</Link>
+        </div>
+      )}
 
       {/* STATS GRID */}
       <div className="profile-stats">
@@ -128,7 +156,6 @@ export default function Profile() {
         <div className="accent-line" />
         <h2>Your Reviews</h2>
       </div>
-
       {reviews.length === 0 ? (
         <div className="empty-state">
           <Star size={40} style={{ color: 'var(--text-muted)', marginBottom: 12 }} />
@@ -162,17 +189,16 @@ export default function Profile() {
         </div>
       )}
 
-      {/* DETENTION LOG HISTORY */}
+      {/* DETENTION LOGS */}
       <div className="section-header" style={{ marginTop: 40 }}>
         <div className="accent-line" />
         <h2>Detention Log History</h2>
       </div>
-
       {logs.length === 0 ? (
         <div className="empty-state">
           <Clock size={40} style={{ color: 'var(--text-muted)', marginBottom: 12 }} />
           <h3>No detention logs yet</h3>
-          <p>Use the timer at your next stop and your logs will appear here.</p>
+          <p>Use the timer at your next stop.</p>
           <Link to="/timer" className="btn btn-primary" style={{ marginTop: 16 }}>Open Timer</Link>
         </div>
       ) : (
@@ -184,7 +210,7 @@ export default function Profile() {
                   <div className="log-facility-name">{log.facility_name}</div>
                   <div className="log-meta">{new Date(log.arrived_at).toLocaleDateString()} · {log.broker_name || 'No broker recorded'}</div>
                 </div>
-                <div style={{ textAlign: 'right' }}>
+                <div>
                   {log.detention_minutes > 0 ? (
                     <span className="badge badge-red">
                       {Math.floor(log.detention_minutes / 60) > 0 ? `${Math.floor(log.detention_minutes / 60)}h ` : ''}{log.detention_minutes % 60}m detention
