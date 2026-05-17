@@ -1,0 +1,95 @@
+.lb-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.lb-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+
+.lb-tab:hover { border-color: var(--orange); color: var(--orange); }
+.lb-tab.active { background: var(--orange); color: #fff; border-color: var(--orange); }
+
+.lb-disclaimer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.lb-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lb-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  text-decoration: none;
+  color: inherit;
+  padding: 16px 20px;
+}
+
+.lb-rank {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--text-muted);
+  min-width: 44px;
+  text-align: center;
+}
+
+.lb-rank-top { color: var(--orange); }
+
+.lb-info { flex: 1; min-width: 0; }
+
+.lb-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lb-location { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+.lb-review-count { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+.lb-metric { text-align: right; flex-shrink: 0; }
+.lb-metric-value { font-family: 'Barlow Condensed', sans-serif; font-size: 24px; font-weight: 900; line-height: 1; }
+.lb-metric-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+
+.lb-footer {
+  text-align: center;
+  margin-top: 32px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.lb-link { color: var(--orange); text-decoration: none; }
+.lb-link:hover { text-decoration: underline; }

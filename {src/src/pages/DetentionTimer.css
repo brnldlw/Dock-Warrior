@@ -1,0 +1,282 @@
+.timer-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+.timer-main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.timer-setup .setup-title {
+  font-size: 20px;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* CLOCK */
+.timer-clock {
+  text-align: center;
+  padding: 32px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.timer-clock.in-detention {
+  border-color: rgba(239, 68, 68, 0.5);
+  box-shadow: 0 0 32px rgba(239, 68, 68, 0.1);
+}
+
+.progress-section {
+  margin-bottom: 28px;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.progress-track {
+  height: 6px;
+  background: var(--bg-elevated);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--green);
+  border-radius: 3px;
+  transition: width 0.5s ease, background 0.3s;
+}
+
+.progress-fill.warning {
+  background: var(--yellow);
+}
+
+.progress-fill.exceeded {
+  background: var(--red);
+  width: 100% !important;
+}
+
+.clock-display {
+  margin-bottom: 20px;
+}
+
+.clock-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.detention-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--red);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.clock-time {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(56px, 12vw, 96px);
+  font-weight: 900;
+  color: var(--text-primary);
+  letter-spacing: 4px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.clock-time.detention-time {
+  color: var(--red);
+}
+
+.detention-counter {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+}
+
+.detention-count-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 4px;
+}
+
+.detention-count-value {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 36px;
+  font-weight: 900;
+  color: var(--red);
+  line-height: 1;
+}
+
+.detention-count-sub {
+  font-size: 13px;
+  color: rgba(239, 68, 68, 0.7);
+  margin-top: 4px;
+}
+
+.arrival-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 12px 0;
+}
+
+.timer-controls {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.timer-btn {
+  min-width: 160px;
+  justify-content: center;
+}
+
+.saved-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 20px;
+  color: var(--green);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* SIDEBAR */
+.timer-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: sticky;
+  top: 80px;
+}
+
+.sidebar-title {
+  font-size: 18px;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-empty {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.logs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.log-item {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.log-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.log-facility {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.log-date {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.log-stats {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* INFO CARD */
+.info-card h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 14px;
+}
+
+.info-card ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.info-card ul li {
+  font-size: 13px;
+  color: var(--text-secondary);
+  padding-left: 16px;
+  position: relative;
+  line-height: 1.5;
+}
+
+.info-card ul li::before {
+  content: '›';
+  position: absolute;
+  left: 0;
+  color: var(--orange);
+}
+
+@media (max-width: 900px) {
+  .timer-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .timer-sidebar {
+    position: static;
+  }
+}
