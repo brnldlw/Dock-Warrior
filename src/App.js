@@ -11,6 +11,8 @@ import Profile from './pages/Profile'
 import Leaderboard from './pages/Leaderboard'
 import BrokerRatings from './pages/BrokerRatings'
 import Pricing from './pages/Pricing'
+import SafetyCheckIn from './pages/SafetyCheckIn'
+import AddFacility from './pages/AddFacility'
 import './App.css'
 
 export default function App() {
@@ -30,6 +32,8 @@ export default function App() {
               <Route path="/leaderboard" element={<Leaderboard />} />
               <Route path="/brokers" element={<BrokerRatings />} />
               <Route path="/pricing" element={<Pricing />} />
+              <Route path="/safety" element={<SafetyCheckIn />} />
+              <Route path="/add-facility" element={<AddFacility />} />
             </Routes>
           </main>
           <Toaster
