@@ -7,7 +7,7 @@ import toast from 'react-hot-toast'
 import './Admin.css'
 
 // Add your Supabase user ID here to grant admin access
-const ADMIN_USER_IDS = [
+const ADMIN_USER_IDS = [795d3002-4bb7-44e2-b223-7c34fa272a3b]
   // Add your user ID from Supabase → Authentication → Users
   // e.g. 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
 ]
