@@ -12,13 +12,21 @@ module.exports = async (req, res) => {
   }
 
   const sig = req.headers['stripe-signature'];
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
   let event;
+  let rawBody = '';
+
+  await new Promise((resolve, reject) => {
+    req.on('data', chunk => rawBody += chunk);
+    req.on('end', resolve);
+    req.on('error', reject);
+  });
 
   try {
-    const rawBody = await getRawBody(req);
-    event = stripe.webhooks.constructEvent(rawBody, sig, webhookSecret);
+    event = stripe.webhooks.constructEvent(
+      rawBody,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
   } catch (err) {
     console.error('Webhook signature error:', err.message);
     return res.status(400).json({ error: `Webhook Error: ${err.message}` });
@@ -28,30 +36,46 @@ module.exports = async (req, res) => {
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object;
-        const userId = session.metadata?.userId;
-        if (!userId) break;
+        const customerEmail = session.customer_details?.email;
+        if (!customerEmail) break;
+
+        // Find user by email
+        const { data: users } = await supabase.auth.admin.listUsers();
+        const user = users?.users?.find(u => u.email === customerEmail);
+        if (!user) break;
 
         await supabase.from('subscriptions').upsert({
-          user_id: userId,
+          user_id: user.id,
           stripe_customer_id: session.customer,
           stripe_subscription_id: session.subscription,
           status: 'active',
           plan: 'pro',
           updated_at: new Date().toISOString()
         }, { onConflict: 'user_id' });
+
+        console.log(`Upgraded user ${user.id} to Pro`);
         break;
       }
 
-      case 'customer.subscription.deleted':
+      case 'customer.subscription.deleted': {
+        const subscription = event.data.object;
+        await supabase.from('subscriptions')
+          .update({
+            status: 'cancelled',
+            plan: 'free',
+            updated_at: new Date().toISOString()
+          })
+          .eq('stripe_subscription_id', subscription.id);
+        break;
+      }
+
       case 'customer.subscription.updated': {
         const subscription = event.data.object;
         const status = subscription.status === 'active' ? 'active' : 'cancelled';
-
         await supabase.from('subscriptions')
           .update({
             status,
             plan: status === 'active' ? 'pro' : 'free',
-            current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
             updated_at: new Date().toISOString()
           })
           .eq('stripe_subscription_id', subscription.id);
@@ -65,12 +89,3 @@ module.exports = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
-
-function getRawBody(req) {
-  return new Promise((resolve, reject) => {
-    const chunks = [];
-    req.on('data', chunk => chunks.push(chunk));
-    req.on('end', () => resolve(Buffer.concat(chunks)));
-    req.on('error', reject);
-  });
-}

@@ -6,6 +6,7 @@ import Home from './pages/Home'
 import Search from './pages/Search'
 import FacilityDetail from './pages/FacilityDetail'
 import DetentionTimer from './pages/DetentionTimer'
+import DetentionInvoice from './pages/DetentionInvoice'
 import Login from './pages/Login'
 import Profile from './pages/Profile'
 import Leaderboard from './pages/Leaderboard'
@@ -27,6 +28,7 @@ export default function App() {
               <Route path="/search" element={<Search />} />
               <Route path="/facility/:id" element={<FacilityDetail />} />
               <Route path="/timer" element={<DetentionTimer />} />
+              <Route path="/invoice" element={<DetentionInvoice />} />
               <Route path="/login" element={<Login />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/leaderboard" element={<Leaderboard />} />

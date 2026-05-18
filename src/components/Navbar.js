@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
-import { Shield, Search, Clock, User, LogOut, Menu, X, Trophy, Star, DollarSign, Plus } from 'lucide-react'
+import { Shield, Search, Clock, User, LogOut, Menu, X, Trophy, Star, DollarSign, Plus, FileText } from 'lucide-react'
 import { useState } from 'react'
 import './Navbar.css'
 
@@ -38,6 +38,9 @@ export default function Navbar() {
           </Link>
           <Link to="/timer" className={`nav-link ${isActive('/timer') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
             <Clock size={16} /> Timer
+          </Link>
+          <Link to="/invoice" className={`nav-link ${isActive('/invoice') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
+            <FileText size={16} /> Invoice
           </Link>
           <Link to="/safety" className={`nav-link ${isActive('/safety') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
             <Shield size={16} /> Safety
