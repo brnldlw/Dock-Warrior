@@ -15,9 +15,38 @@
   font-size: 20px;
   font-weight: 800;
   text-transform: uppercase;
-  margin-bottom: 20px;
+  margin-bottom: 8px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border);
+}
+
+.manual-preview {
+  display: flex;
+  gap: 20px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px;
+  margin: 16px 0;
+}
+
+.manual-preview-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.manual-preview-stat span {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.manual-preview-stat strong {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
 }
 
 /* CLOCK */
@@ -32,9 +61,7 @@
   box-shadow: 0 0 32px rgba(239, 68, 68, 0.1);
 }
 
-.progress-section {
-  margin-bottom: 28px;
-}
+.progress-section { margin-bottom: 28px; }
 
 .progress-label {
   display: flex;
@@ -61,18 +88,10 @@
   transition: width 0.5s ease, background 0.3s;
 }
 
-.progress-fill.warning {
-  background: var(--yellow);
-}
+.progress-fill.warning { background: var(--yellow); }
+.progress-fill.exceeded { background: var(--red); width: 100% !important; }
 
-.progress-fill.exceeded {
-  background: var(--red);
-  width: 100% !important;
-}
-
-.clock-display {
-  margin-bottom: 20px;
-}
+.clock-display { margin-bottom: 20px; }
 
 .clock-label {
   font-family: 'Barlow Condensed', sans-serif;
@@ -106,9 +125,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-.clock-time.detention-time {
-  color: var(--red);
-}
+.clock-time.detention-time { color: var(--red); }
 
 .detention-counter {
   background: rgba(239, 68, 68, 0.08);
@@ -135,11 +152,7 @@
   line-height: 1;
 }
 
-.detention-count-sub {
-  font-size: 13px;
-  color: rgba(239, 68, 68, 0.7);
-  margin-top: 4px;
-}
+.detention-count-sub { font-size: 13px; color: rgba(239, 68, 68, 0.7); margin-top: 4px; }
 
 .arrival-info {
   display: flex;
@@ -159,10 +172,15 @@
   margin-top: 20px;
 }
 
-.timer-btn {
-  min-width: 160px;
+.timer-controls-row {
+  display: flex;
+  gap: 12px;
   justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 16px;
 }
+
+.timer-btn { min-width: 140px; justify-content: center; }
 
 .saved-badge {
   display: inline-flex;
@@ -195,27 +213,16 @@
   border-bottom: 1px solid var(--border);
 }
 
-.sidebar-empty {
-  font-size: 14px;
-  color: var(--text-muted);
-  line-height: 1.6;
-}
+.sidebar-empty { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
 
-.logs-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+.logs-list { display: flex; flex-direction: column; gap: 12px; }
 
 .log-item {
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border);
 }
 
-.log-item:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-}
+.log-item:last-child { border-bottom: none; padding-bottom: 0; }
 
 .log-facility {
   font-family: 'Barlow Condensed', sans-serif;
@@ -225,19 +232,10 @@
   margin-bottom: 2px;
 }
 
-.log-date {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-bottom: 6px;
-}
+.log-date { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
 
-.log-stats {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
+.log-stats { display: flex; gap: 6px; flex-wrap: wrap; }
 
-/* INFO CARD */
 .info-card h4 {
   display: flex;
   align-items: center;
@@ -249,12 +247,7 @@
   margin-bottom: 14px;
 }
 
-.info-card ul {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+.info-card ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
 
 .info-card ul li {
   font-size: 13px;
@@ -264,19 +257,9 @@
   line-height: 1.5;
 }
 
-.info-card ul li::before {
-  content: '›';
-  position: absolute;
-  left: 0;
-  color: var(--orange);
-}
+.info-card ul li::before { content: '›'; position: absolute; left: 0; color: var(--orange); }
 
 @media (max-width: 900px) {
-  .timer-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .timer-sidebar {
-    position: static;
-  }
+  .timer-layout { grid-template-columns: 1fr; }
+  .timer-sidebar { position: static; }
 }
