@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { useSubscription } from '../hooks/useSubscription'
-import { MapPin, Star, Search, Plus, ChevronRight, Fuel, Shower, Utensils, Shield, Wifi, Wrench, Lock, Zap, CheckCircle, XCircle, Camera } from 'lucide-react'
+import { MapPin, Star, Search, Plus, ChevronRight, Fuel, Droplets, Utensils, Shield, Wifi, Wrench, Lock, Zap, CheckCircle, XCircle, Camera } from 'lucide-react'
 import toast from 'react-hot-toast'
 import './TruckStops.css'
 
@@ -73,7 +73,7 @@ function StopCard({ stop, onClick }) {
       </div>
       <div className="stop-amenities">
         {stop.has_fuel !== false && <span className="amenity"><Fuel size={12} /> Fuel</span>}
-        {stop.avg_shower && <span className="amenity"><Shower size={12} /> Showers</span>}
+        {stop.avg_shower && <span className="amenity"><Droplets size={12} /> Showers</span>}
         {stop.has_repair_pct > 0.5 && <span className="amenity"><Wrench size={12} /> Repair</span>}
         {stop.has_wifi_pct > 0.5 && <span className="amenity"><Wifi size={12} /> WiFi</span>}
         {stop.has_scales_pct > 0.5 && <span className="amenity"><CheckCircle size={12} /> Scales</span>}
@@ -344,7 +344,7 @@ export default function TruckStops() {
             <div className="stop-ratings-grid">
               {[
                 { label: 'Parking', key: 'parking_rating', icon: <MapPin size={16} /> },
-                { label: 'Showers', key: 'shower_rating', icon: <Shower size={16} /> },
+                { label: 'Showers', key: 'shower_rating', icon: <Droplets size={16} /> },
                 { label: 'Food', key: 'food_rating', icon: <Utensils size={16} /> },
                 { label: 'Staff', key: 'staff_rating', icon: <Shield size={16} /> },
                 { label: 'Security', key: 'security_rating', icon: <Lock size={16} /> },
@@ -441,7 +441,7 @@ export default function TruckStops() {
                   </div>
                   <div className="stop-review-stats">
                     {r.parking_spaces_available && <span className="stat-chip"><MapPin size={11} /><strong>{r.parking_spaces_available}</strong> spots</span>}
-                    {r.shower_wait_minutes && <span className="stat-chip"><Shower size={11} /><strong>{r.shower_wait_minutes}min</strong> shower wait</span>}
+                    {r.shower_wait_minutes && <span className="stat-chip"><Droplets size={11} /><strong>{r.shower_wait_minutes}min</strong> shower wait</span>}
                     {r.fuel_price && <span className="stat-chip"><Fuel size={11} /><strong>${r.fuel_price}</strong>/gal</span>}
                     {r.has_scales !== null && <span className={`badge ${r.has_scales ? 'badge-green' : 'badge-gray'}`}>{r.has_scales ? '✓' : '✗'} Scales</span>}
                     {r.has_repair !== null && <span className={`badge ${r.has_repair ? 'badge-green' : 'badge-gray'}`}>{r.has_repair ? '✓' : '✗'} Repair</span>}

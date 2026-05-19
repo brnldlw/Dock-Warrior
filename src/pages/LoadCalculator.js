@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useSubscription } from '../hooks/useSubscription'
 import { Link } from 'react-router-dom'
-import { DollarSign, Truck, Fuel, Zap, TrendingUp, TrendingDown, AlertTriangle, CheckCircle, Calculator } from 'lucide-react'
+import { DollarSign, Truck, Fuel, Zap, TrendingUp, TrendingDown, AlertTriangle, CheckCircle, Calculator, Clock } from 'lucide-react'
 import './LoadCalculator.css'
 
 const FUEL_EFFICIENCY_DEFAULTS = {
