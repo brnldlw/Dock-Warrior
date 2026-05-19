@@ -1,8 +1,38 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
-import { Shield, Search, Clock, User, LogOut, Menu, X, Trophy, Star, DollarSign, Plus, FileText, Navigation, Fuel, Calculator, MessageSquare, AlertTriangle } from 'lucide-react'
-import { useState } from 'react'
+import { Shield, Search, Clock, User, LogOut, Menu, X, Trophy, Star, DollarSign, Plus, FileText, Navigation, Fuel, Calculator, MessageSquare, AlertTriangle, ChevronDown } from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
 import './Navbar.css'
+
+function Dropdown({ label, icon, items, isActive }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false)
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
+
+  return (
+    <div className={`nav-dropdown`} ref={ref}>
+      <button className={`nav-link nav-dropdown-trigger ${isActive ? 'active' : ''}`} onClick={() => setOpen(!open)}>
+        {icon} {label} <ChevronDown size={12} className={`dropdown-arrow ${open ? 'open' : ''}`} />
+      </button>
+      {open && (
+        <div className="dropdown-menu">
+          {items.map((item, i) => (
+            <Link key={i} to={item.to} className="dropdown-item" onClick={() => setOpen(false)}>
+              {item.icon} {item.label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
 
 export default function Navbar() {
   const { user, signOut } = useAuth()
@@ -16,7 +46,28 @@ export default function Navbar() {
     setMenuOpen(false)
   }
 
-  const isActive = (path) => location.pathname === path
+  const p = location.pathname
+
+  const intelligenceItems = [
+    { to: '/search', icon: <Search size={14} />, label: 'Search Docks' },
+    { to: '/truck-stops', icon: <Fuel size={14} />, label: 'Truck Stops' },
+    { to: '/brokers', icon: <Star size={14} />, label: 'Broker Ratings' },
+    { to: '/leaderboard', icon: <Trophy size={14} />, label: 'Leaderboard' },
+    { to: '/route', icon: <Navigation size={14} />, label: 'Route Intelligence' },
+    { to: '/feed', icon: <MessageSquare size={14} />, label: 'Driver Feed' },
+  ]
+
+  const toolItems = [
+    { to: '/timer', icon: <Clock size={14} />, label: 'Detention Timer' },
+    { to: '/invoice', icon: <FileText size={14} />, label: 'Detention Invoice' },
+    { to: '/calculator', icon: <Calculator size={14} />, label: 'Load Calculator' },
+    { to: '/safety', icon: <Shield size={14} />, label: 'Safety Check-In' },
+    { to: '/emergency', icon: <AlertTriangle size={14} />, label: 'Emergency Services' },
+    { to: '/add-facility', icon: <Plus size={14} />, label: 'Add a Dock' },
+  ]
+
+  const intelligenceActive = ['/search','/truck-stops','/brokers','/leaderboard','/route','/feed'].includes(p)
+  const toolsActive = ['/timer','/invoice','/calculator','/safety','/emergency','/add-facility'].includes(p)
 
   return (
     <nav className="navbar">
@@ -27,59 +78,56 @@ export default function Navbar() {
         </Link>
 
         <div className={`navbar-links ${menuOpen ? 'open' : ''}`}>
-          <Link to="/search" className={`nav-link ${isActive('/search') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
-            <Search size={16} /> Docks
-          </Link>
-          <Link to="/truck-stops" className={`nav-link ${isActive('/truck-stops') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
-            <Fuel size={16} /> Stops
-          </Link>
-          <Link to="/brokers" className={`nav-link ${isActive('/brokers') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
-            <Star size={16} /> Brokers
-          </Link>
-          <Link to="/leaderboard" className={`nav-link ${isActive('/leaderboard') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
-            <Trophy size={16} /> Rankings
-          </Link>
-          <Link to="/feed" className={`nav-link ${isActive('/feed') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
-            <MessageSquare size={16} /> Feed
-          </Link>
-          <Link to="/route" className={`nav-link ${isActive('/route') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
-            <Navigation size={16} /> Route
-          </Link>
-          <Link to="/calculator" className={`nav-link ${isActive('/calculator') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
-            <Calculator size={16} /> Calculator
-          </Link>
-          <Link to="/timer" className={`nav-link ${isActive('/timer') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
-            <Clock size={16} /> Timer
-          </Link>
-          <Link to="/invoice" className={`nav-link ${isActive('/invoice') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
-            <FileText size={16} /> Invoice
-          </Link>
-          <Link to="/safety" className={`nav-link ${isActive('/safety') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
-            <Shield size={16} /> Safety
-          </Link>
-          <Link to="/emergency" className={`nav-link nav-emergency ${isActive('/emergency') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
-            <AlertTriangle size={16} /> Emergency
-          </Link>
-          <Link to="/add-facility" className={`nav-link ${isActive('/add-facility') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
-            <Plus size={16} /> Add Dock
-          </Link>
-          <Link to="/pricing" className={`nav-link nav-pro ${isActive('/pricing') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
-            <DollarSign size={16} /> Go Pro
-          </Link>
-          {user ? (
-            <>
-              <Link to="/profile" className={`nav-link ${isActive('/profile') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
-                <User size={16} /> Profile
-              </Link>
-              <button className="nav-link nav-signout" onClick={handleSignOut}>
-                <LogOut size={16} /> Sign Out
-              </button>
-            </>
-          ) : (
-            <Link to="/login" className="btn btn-primary btn-sm" onClick={() => setMenuOpen(false)}>
-              Sign In
+          <div className="desktop-nav">
+            <Dropdown label="Intelligence" icon={<Search size={16} />} items={intelligenceItems} isActive={intelligenceActive} />
+            <Dropdown label="Tools" icon={<Clock size={16} />} items={toolItems} isActive={toolsActive} />
+            <Link to="/pricing" className={`nav-link nav-pro ${p === '/pricing' ? 'active' : ''}`}>
+              <DollarSign size={16} /> Go Pro
             </Link>
-          )}
+            {user ? (
+              <>
+                <Link to="/profile" className={`nav-link ${p === '/profile' ? 'active' : ''}`}>
+                  <User size={16} /> Profile
+                </Link>
+                <button className="nav-link nav-signout" onClick={handleSignOut}>
+                  <LogOut size={16} /> Sign Out
+                </button>
+              </>
+            ) : (
+              <Link to="/login" className="btn btn-primary btn-sm">Sign In</Link>
+            )}
+          </div>
+
+          <div className="mobile-nav">
+            <div className="mobile-nav-section-label">Intelligence</div>
+            {intelligenceItems.map(item => (
+              <Link key={item.to} to={item.to} className={`nav-link ${p === item.to ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
+                {item.icon} {item.label}
+              </Link>
+            ))}
+            <div className="mobile-nav-section-label">Tools</div>
+            {toolItems.map(item => (
+              <Link key={item.to} to={item.to} className={`nav-link ${p === item.to ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
+                {item.icon} {item.label}
+              </Link>
+            ))}
+            <div className="mobile-nav-section-label">Account</div>
+            <Link to="/pricing" className="nav-link nav-pro" onClick={() => setMenuOpen(false)}>
+              <DollarSign size={16} /> Go Pro
+            </Link>
+            {user ? (
+              <>
+                <Link to="/profile" className={`nav-link ${p === '/profile' ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
+                  <User size={16} /> Profile
+                </Link>
+                <button className="nav-link nav-signout" onClick={handleSignOut}>
+                  <LogOut size={16} /> Sign Out
+                </button>
+              </>
+            ) : (
+              <Link to="/login" className="btn btn-primary btn-sm" style={{ margin: '8px 0' }} onClick={() => setMenuOpen(false)}>Sign In</Link>
+            )}
+          </div>
         </div>
 
         <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
