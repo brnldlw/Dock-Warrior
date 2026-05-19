@@ -152,7 +152,7 @@ export default function SearchPage() {
         q = q.or(`facility_type.eq.${type},facility_type.eq.both`)
       }
 
-      const { data, error } = await q.limit(50)
+      const { data, error } = await q.limit(500)
       if (error) throw error
 
       // Compute aggregates client-side
