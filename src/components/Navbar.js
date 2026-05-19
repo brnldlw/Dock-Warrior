@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
-import { Shield, Search, Clock, User, LogOut, Menu, X, Trophy, Star, DollarSign, Plus, FileText } from 'lucide-react'
+import { Shield, Search, Clock, User, LogOut, Menu, X, Trophy, Star, DollarSign, Plus, FileText, Navigation, Fuel, Calculator } from 'lucide-react'
 import { useState } from 'react'
 import './Navbar.css'
 
@@ -9,6 +9,7 @@ export default function Navbar() {
   const location = useLocation()
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [toolsOpen, setToolsOpen] = useState(false)
 
   const handleSignOut = async () => {
     await signOut()
@@ -28,13 +29,22 @@ export default function Navbar() {
 
         <div className={`navbar-links ${menuOpen ? 'open' : ''}`}>
           <Link to="/search" className={`nav-link ${isActive('/search') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
-            <Search size={16} /> Search
+            <Search size={16} /> Docks
+          </Link>
+          <Link to="/truck-stops" className={`nav-link ${isActive('/truck-stops') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
+            <Fuel size={16} /> Truck Stops
           </Link>
           <Link to="/brokers" className={`nav-link ${isActive('/brokers') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
             <Star size={16} /> Brokers
           </Link>
           <Link to="/leaderboard" className={`nav-link ${isActive('/leaderboard') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
             <Trophy size={16} /> Leaderboard
+          </Link>
+          <Link to="/route" className={`nav-link ${isActive('/route') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
+            <Navigation size={16} /> Route
+          </Link>
+          <Link to="/calculator" className={`nav-link ${isActive('/calculator') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
+            <Calculator size={16} /> Calculator
           </Link>
           <Link to="/timer" className={`nav-link ${isActive('/timer') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
             <Clock size={16} /> Timer

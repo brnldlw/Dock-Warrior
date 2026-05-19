@@ -15,6 +15,9 @@ import Pricing from './pages/Pricing'
 import SafetyCheckIn from './pages/SafetyCheckIn'
 import AddFacility from './pages/AddFacility'
 import Admin from './pages/Admin'
+import TruckStops from './pages/TruckStops'
+import RouteIntelligence from './pages/RouteIntelligence'
+import LoadCalculator from './pages/LoadCalculator'
 import './App.css'
 
 export default function App() {
@@ -38,6 +41,9 @@ export default function App() {
               <Route path="/safety" element={<SafetyCheckIn />} />
               <Route path="/add-facility" element={<AddFacility />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/truck-stops" element={<TruckStops />} />
+              <Route path="/route" element={<RouteIntelligence />} />
+              <Route path="/calculator" element={<LoadCalculator />} />
             </Routes>
           </main>
           <Toaster
