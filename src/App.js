@@ -18,6 +18,8 @@ import Admin from './pages/Admin'
 import TruckStops from './pages/TruckStops'
 import RouteIntelligence from './pages/RouteIntelligence'
 import LoadCalculator from './pages/LoadCalculator'
+import CommunityFeed from './pages/CommunityFeed'
+import EmergencyServices from './pages/EmergencyServices'
 import './App.css'
 
 export default function App() {
@@ -44,6 +46,8 @@ export default function App() {
               <Route path="/truck-stops" element={<TruckStops />} />
               <Route path="/route" element={<RouteIntelligence />} />
               <Route path="/calculator" element={<LoadCalculator />} />
+              <Route path="/feed" element={<CommunityFeed />} />
+              <Route path="/emergency" element={<EmergencyServices />} />
             </Routes>
           </main>
           <Toaster

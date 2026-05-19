@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
-import { Shield, Search, Clock, User, LogOut, Menu, X, Trophy, Star, DollarSign, Plus, FileText, Navigation, Fuel, Calculator } from 'lucide-react'
+import { Shield, Search, Clock, User, LogOut, Menu, X, Trophy, Star, DollarSign, Plus, FileText, Navigation, Fuel, Calculator, MessageSquare, AlertTriangle } from 'lucide-react'
 import { useState } from 'react'
 import './Navbar.css'
 
@@ -9,7 +9,6 @@ export default function Navbar() {
   const location = useLocation()
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
-  const [toolsOpen, setToolsOpen] = useState(false)
 
   const handleSignOut = async () => {
     await signOut()
@@ -32,13 +31,16 @@ export default function Navbar() {
             <Search size={16} /> Docks
           </Link>
           <Link to="/truck-stops" className={`nav-link ${isActive('/truck-stops') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
-            <Fuel size={16} /> Truck Stops
+            <Fuel size={16} /> Stops
           </Link>
           <Link to="/brokers" className={`nav-link ${isActive('/brokers') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
             <Star size={16} /> Brokers
           </Link>
           <Link to="/leaderboard" className={`nav-link ${isActive('/leaderboard') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
-            <Trophy size={16} /> Leaderboard
+            <Trophy size={16} /> Rankings
+          </Link>
+          <Link to="/feed" className={`nav-link ${isActive('/feed') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
+            <MessageSquare size={16} /> Feed
           </Link>
           <Link to="/route" className={`nav-link ${isActive('/route') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
             <Navigation size={16} /> Route
@@ -54,6 +56,9 @@ export default function Navbar() {
           </Link>
           <Link to="/safety" className={`nav-link ${isActive('/safety') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
             <Shield size={16} /> Safety
+          </Link>
+          <Link to="/emergency" className={`nav-link nav-emergency ${isActive('/emergency') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
+            <AlertTriangle size={16} /> Emergency
           </Link>
           <Link to="/add-facility" className={`nav-link ${isActive('/add-facility') ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
             <Plus size={16} /> Add Dock
