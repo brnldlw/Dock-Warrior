@@ -19,8 +19,9 @@ import TruckStops from './pages/TruckStops'
 import RouteIntelligence from './pages/RouteIntelligence'
 import LoadCalculator from './pages/LoadCalculator'
 import CommunityFeed from './pages/CommunityFeed'
-import Contact from './pages/Contact'
 import EmergencyServices from './pages/EmergencyServices'
+import Contact from './pages/Contact'
+import TheWarrior from './pages/TheWarrior'
 import './App.css'
 
 export default function App() {
@@ -48,8 +49,9 @@ export default function App() {
               <Route path="/route" element={<RouteIntelligence />} />
               <Route path="/calculator" element={<LoadCalculator />} />
               <Route path="/feed" element={<CommunityFeed />} />
-              <Route path="/contact" element={<Contact />} />
               <Route path="/emergency" element={<EmergencyServices />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/warrior" element={<TheWarrior />} />
             </Routes>
           </main>
           <Toaster

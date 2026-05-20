@@ -18,6 +18,7 @@ const FREE_FEATURES = [
 
 const PRO_FEATURES = [
   'Everything in Free',
+  'The Warrior AI Co-Driver — unlimited access',
   'Unlimited review submissions',
   'Full broker rating submission',
   'Route Intelligence — full lane scanning',
@@ -97,7 +98,7 @@ export default function Pricing() {
           <div className="pricing-badge">Most Popular</div>
           <div className="pricing-tier">Pro</div>
           <div className="pricing-price">
-            <span className="price-amount">$12</span>
+            <span className="price-amount">$14</span>
             <span className="price-period">/month</span>
           </div>
           <p className="pricing-desc">For serious owner-operators who want every edge on every load.</p>
@@ -112,7 +113,7 @@ export default function Pricing() {
               onClick={handleProClick}
             >
               <Zap size={16} />
-              {user ? 'Upgrade to Pro — $12/mo' : 'Sign In to Upgrade'}
+              {user ? 'Upgrade to Pro — $14/mo' : 'Sign In to Upgrade'}
             </button>
           )}
           <div className="pricing-features">
