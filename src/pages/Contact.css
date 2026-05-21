@@ -1,0 +1,20 @@
+.contact-layout { display: grid; grid-template-columns: 1fr 320px; gap: 24px; align-items: start; }
+.contact-form { padding: 32px; }
+.contact-success { padding: 48px 32px; text-align: center; }
+.contact-success h3 { font-size: 28px; font-weight: 800; text-transform: uppercase; color: var(--green); margin-bottom: 12px; }
+.contact-success p { color: var(--text-secondary); font-size: 15px; line-height: 1.6; }
+.contact-sidebar { display: flex; flex-direction: column; gap: 16px; position: sticky; top: 80px; }
+.contact-info { padding: 24px; }
+.contact-faq { padding: 24px; }
+.contact-info-title { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 800; text-transform: uppercase; color: var(--orange); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.contact-methods { display: flex; flex-direction: column; gap: 12px; }
+.contact-method { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 6px; text-decoration: none; transition: all 0.2s; color: inherit; }
+.contact-method:hover { border-color: var(--orange); transform: translateX(4px); }
+.contact-method-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+.contact-method-value { font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 700; color: var(--text-primary); }
+.contact-faqs { display: flex; flex-direction: column; gap: 14px; }
+.contact-faq-item { padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+.contact-faq-item:last-child { border-bottom: none; padding-bottom: 0; }
+.contact-faq-q { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; color: var(--text-primary); margin-bottom: 4px; }
+.contact-faq-a { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+@media (max-width: 900px) { .contact-layout { grid-template-columns: 1fr; } .contact-sidebar { position: static; } }

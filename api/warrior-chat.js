@@ -65,7 +65,7 @@ module.exports = async (req, res) => {
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-3-5-sonnet-20241022',
         max_tokens: 1000,
         system: systemPrompt,
         messages: messages.map(m => ({ role: m.role, content: m.content }))
@@ -91,3 +91,6 @@ module.exports = async (req, res) => {
     return res.status(500).json({ error: error.message })
   }
 }
+
+
+
