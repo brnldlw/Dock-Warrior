@@ -211,7 +211,7 @@ export default function TheWarrior() {
     }
 
     try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      const response = await fetch('/api/warrior-chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -223,7 +223,7 @@ export default function TheWarrior() {
       })
 
       const data = await response.json()
-      const reply = data.content?.[0]?.text || 'Something went wrong. Try again.'
+      const reply = data.reply || 'Something went wrong. Try again.'
 
       setMessages(prev => [...prev, { role: 'assistant', content: reply }])
       setSpeaking(true)
@@ -371,3 +371,5 @@ export default function TheWarrior() {
     </div>
   )
 }
+
+
