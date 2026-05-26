@@ -220,3 +220,5 @@
   color: #fff !important;
   border-color: var(--orange) !important;
 }
+
+@media (max-width: 768px) { .mobile-nav { display: flex !important; flex-direction: column !important; } }
