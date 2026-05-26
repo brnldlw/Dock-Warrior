@@ -222,3 +222,5 @@
 }
 
 @media (max-width: 768px) { .mobile-nav { display: flex !important; flex-direction: column !important; } }
+
+@media (max-width: 768px) { .navbar-links.open { display: flex !important; background: #0d0d0d !important; z-index: 9999 !important; } .navbar-links.open .nav-link { color: #ffffff !important; display: flex !important; } .navbar-links.open .mobile-nav { display: flex !important; } }
