@@ -1,0 +1,75 @@
+.install-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: #1A1A1A;
+  border-top: 2px solid #FF6B00;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.5);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.install-banner-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.install-banner-content {
+  flex: 1;
+}
+
+.install-banner-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #FF6B00;
+  margin-bottom: 2px;
+}
+
+.install-banner-sub {
+  font-size: 13px;
+  color: #888;
+}
+
+.install-banner-sub strong {
+  color: #FF6B00;
+}
+
+.install-banner-btn {
+  background: #FF6B00;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.install-banner-close {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+.install-banner-close:hover { color: #fff; }

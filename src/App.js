@@ -23,6 +23,7 @@ import EmergencyServices from './pages/EmergencyServices'
 import Contact from './pages/Contact'
 import TheWarrior from './pages/TheWarrior'
 import './App.css'
+import InstallBanner from './components/InstallBanner'
 
 export default function App() {
   return (

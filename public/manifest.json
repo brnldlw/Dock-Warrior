@@ -1,0 +1,57 @@
+{
+  "short_name": "DockWarrior",
+  "name": "DockWarrior — Trucking Intelligence",
+  "description": "Dock ratings, AI co-driver, route intelligence, and detention tools for CDL drivers.",
+  "icons": [
+    {
+      "src": "/icons/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#FF6B00",
+  "background_color": "#080808",
+  "categories": ["navigation", "utilities", "business"],
+  "shortcuts": [
+    {
+      "name": "Search Docks",
+      "short_name": "Docks",
+      "url": "/search",
+      "icons": [{ "src": "/icons/favicon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "The Warrior AI",
+      "short_name": "Warrior",
+      "url": "/warrior",
+      "icons": [{ "src": "/icons/favicon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Detention Timer",
+      "short_name": "Timer",
+      "url": "/timer",
+      "icons": [{ "src": "/icons/favicon-96x96.png", "sizes": "96x96" }]
+    }
+  ]
+}
