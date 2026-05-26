@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
-import { Shield, Search, Clock, User, LogOut, Menu, X, Trophy, Star, DollarSign, Plus, FileText, Navigation, Fuel, Calculator, MessageSquare, AlertTriangle, ChevronDown, Mail, Sword } from 'lucide-react'
+import { Shield, Search, Clock, User, LogOut, Menu, X, Trophy, Star, DollarSign, Plus, FileText, Navigation, Fuel, Calculator, MessageSquare, AlertTriangle, ChevronDown, Mail, Gift } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import './Navbar.css'
 
@@ -17,7 +17,7 @@ function Dropdown({ label, icon, items, isActive }) {
   }, [])
 
   return (
-    <div className={`nav-dropdown`} ref={ref}>
+    <div className="nav-dropdown" ref={ref}>
       <button className={`nav-link nav-dropdown-trigger ${isActive ? 'active' : ''}`} onClick={() => setOpen(!open)}>
         {icon} {label} <ChevronDown size={12} className={`dropdown-arrow ${open ? 'open' : ''}`} />
       </button>
@@ -46,6 +46,21 @@ export default function Navbar() {
     setMenuOpen(false)
   }
 
+  // Close menu on route change
+  useEffect(() => {
+    setMenuOpen(false)
+  }, [location.pathname])
+
+  // Prevent body scroll when menu open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [menuOpen])
+
   const p = location.pathname
 
   const intelligenceItems = [
@@ -66,10 +81,11 @@ export default function Navbar() {
     { to: '/add-facility', icon: <Plus size={14} />, label: 'Add a Dock' },
     { to: '/contact', icon: <Mail size={14} />, label: 'Contact Us' },
     { to: '/warrior', icon: <span>⚔</span>, label: 'The Warrior AI' },
+    { to: '/referral', icon: <Gift size={14} />, label: 'Refer a Driver' },
   ]
 
   const intelligenceActive = ['/search','/truck-stops','/brokers','/leaderboard','/route','/feed'].includes(p)
-  const toolsActive = ['/timer','/invoice','/calculator','/safety','/emergency','/add-facility'].includes(p)
+  const toolsActive = ['/timer','/invoice','/calculator','/safety','/emergency','/add-facility','/warrior'].includes(p)
 
   return (
     <nav className="navbar">
@@ -79,14 +95,22 @@ export default function Navbar() {
           <span className="brand-text">DOCK<span className="brand-accent">WARRIOR</span></span>
         </Link>
 
+        {/* Hamburger - moved before links for proper stacking */}
+        <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
+          {menuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+
+        {/* Mobile overlay */}
+        {menuOpen && <div className="mobile-overlay" onClick={() => setMenuOpen(false)} />}
+
         <div className={`navbar-links ${menuOpen ? 'open' : ''}`}>
           <div className="desktop-nav">
             <Dropdown label="Intelligence" icon={<Search size={16} />} items={intelligenceItems} isActive={intelligenceActive} />
             <Dropdown label="Tools" icon={<Clock size={16} />} items={toolItems} isActive={toolsActive} />
             <Link to="/warrior" className={`nav-link nav-warrior ${p === '/warrior' ? 'active' : ''}`}>
-            ⚔ The Warrior
-          </Link>
-          <Link to="/pricing" className={`nav-link nav-pro ${p === '/pricing' ? 'active' : ''}`}>
+              ⚔ The Warrior
+            </Link>
+            <Link to="/pricing" className={`nav-link nav-pro ${p === '/pricing' ? 'active' : ''}`}>
               <DollarSign size={16} /> Go Pro
             </Link>
             {user ? (
@@ -134,10 +158,6 @@ export default function Navbar() {
             )}
           </div>
         </div>
-
-        <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
-          {menuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
       </div>
     </nav>
   )
