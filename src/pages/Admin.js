@@ -6,7 +6,7 @@ import { Shield, Users, Search, Crown, Clock, Star, RefreshCw, XCircle, Plus } f
 import toast from 'react-hot-toast'
 import './Admin.css'
 
-const ADMIN_USER_IDS = ['795d3002-4bb7-44e2-b223-7c34fa272a3b']
+const ADMIN_USER_IDS = ['350c573e-b713-4c0b-aeee-7c1dc4f4fdc9']
 
 function daysRemaining(endDate) {
   if (!endDate) return null
@@ -328,3 +328,5 @@ export default function Admin() {
     </div>
   )
 }
+
+
