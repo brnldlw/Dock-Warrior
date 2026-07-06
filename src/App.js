@@ -23,6 +23,7 @@ import EmergencyServices from './pages/EmergencyServices'
 import Contact from './pages/Contact'
 import TheWarrior from './pages/TheWarrior'
 import './App.css'
+import ResetPassword from './pages/ResetPassword'
 import InstallBanner from './components/InstallBanner'
 
 export default function App() {
@@ -53,6 +54,7 @@ export default function App() {
               <Route path="/emergency" element={<EmergencyServices />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/warrior" element={<TheWarrior />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
             </Routes>
           </main>
           <Toaster
@@ -73,3 +75,5 @@ export default function App() {
     </AuthProvider>
   )
 }
+
+
