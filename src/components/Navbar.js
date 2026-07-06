@@ -1,8 +1,10 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
-import { Shield, Search, Clock, User, LogOut, Menu, X, Trophy, Star, DollarSign, Plus, FileText, Navigation, Fuel, Calculator, MessageSquare, AlertTriangle, Mail, Gift } from 'lucide-react'
+import { Shield, Search, Clock, User, LogOut, Menu, X, DollarSign, Mail, Gift } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import './Navbar.css'
+
+const isNativeApp = () => navigator.userAgent.includes('DockWarriorApp')
 
 export default function Navbar() {
   const { user, signOut } = useAuth()
@@ -14,6 +16,15 @@ export default function Navbar() {
     await signOut()
     navigate('/')
     setMenuOpen(false)
+  }
+
+  const handleGoPro = () => {
+    setMenuOpen(false)
+    if (isNativeApp()) {
+      window.open('https://dockwarrior.com/pricing', '_blank')
+    } else {
+      navigate('/pricing')
+    }
   }
 
   useEffect(() => { setMenuOpen(false) }, [location.pathname])
@@ -38,8 +49,6 @@ export default function Navbar() {
     { to: '/add-facility', icon: '➕', label: 'Add a Dock' },
     { to: '/contact', icon: '✉️', label: 'Contact Us' },
     { to: '/referral', icon: '🎁', label: 'Refer a Driver' },
-    { section: 'Account' },
-    { to: '/pricing', icon: '💰', label: 'Go Pro' },
   ]
 
   return (
@@ -78,7 +87,9 @@ export default function Navbar() {
               </div>
             </div>
             <Link to="/warrior" className="nav-link nav-warrior">⚔ The Warrior</Link>
-            <Link to="/pricing" className="nav-link nav-pro"><DollarSign size={14} /> Go Pro</Link>
+            <button className="nav-link nav-pro" onClick={handleGoPro}>
+              <DollarSign size={14} /> Go Pro
+            </button>
             {user ? (
               <>
                 <Link to="/profile" className="nav-link"><User size={14} /> Profile</Link>
@@ -96,34 +107,21 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile drawer - completely separate from navbar */}
+      {/* Mobile drawer */}
       {menuOpen && (
         <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 9999,
-          display: 'flex',
-          flexDirection: 'column',
-          background: '#0d0d0d',
-          overflowY: 'auto',
-          paddingTop: '64px'
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          zIndex: 9999, display: 'flex', flexDirection: 'column',
+          background: '#0d0d0d', overflowY: 'auto', paddingTop: '64px'
         }}>
           <div style={{ padding: '16px' }}>
             {allLinks.map((item, i) => {
               if (item.section) {
                 return (
                   <div key={i} style={{
-                    color: '#FF6B00',
-                    fontFamily: "'Barlow Condensed', sans-serif",
-                    fontSize: 11,
-                    fontWeight: 700,
-                    letterSpacing: 2,
-                    textTransform: 'uppercase',
-                    padding: '16px 8px 6px',
-                    borderTop: i === 0 ? 'none' : '1px solid #222',
+                    color: '#FF6B00', fontFamily: "'Barlow Condensed', sans-serif",
+                    fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
+                    padding: '16px 8px 6px', borderTop: i === 0 ? 'none' : '1px solid #222',
                     marginTop: i === 0 ? 0 : 8
                   }}>
                     {item.section}
@@ -131,32 +129,30 @@ export default function Navbar() {
                 )
               }
               return (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  onClick={() => setMenuOpen(false)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 12,
-                    padding: '14px 12px',
-                    color: p === item.to ? '#FF6B00' : '#ccc',
-                    textDecoration: 'none',
-                    fontFamily: "'Barlow Condensed', sans-serif",
-                    fontSize: 16,
-                    fontWeight: 700,
-                    letterSpacing: 1,
-                    textTransform: 'uppercase',
-                    borderRadius: 8,
-                    background: p === item.to ? 'rgba(255,107,0,0.1)' : 'transparent',
-                    marginBottom: 2
-                  }}
-                >
+                <Link key={item.to} to={item.to} onClick={() => setMenuOpen(false)} style={{
+                  display: 'flex', alignItems: 'center', gap: 12, padding: '14px 12px',
+                  color: p === item.to ? '#FF6B00' : '#ccc', textDecoration: 'none',
+                  fontFamily: "'Barlow Condensed', sans-serif", fontSize: 16, fontWeight: 700,
+                  letterSpacing: 1, textTransform: 'uppercase', borderRadius: 8,
+                  background: p === item.to ? 'rgba(255,107,0,0.1)' : 'transparent', marginBottom: 2
+                }}>
                   <span style={{ fontSize: 18 }}>{item.icon}</span>
                   {item.label}
                 </Link>
               )
             })}
+
+            {/* Go Pro button */}
+            <button onClick={handleGoPro} style={{
+              display: 'flex', alignItems: 'center', gap: 12, padding: '14px 12px',
+              color: '#FF6B00', background: 'rgba(255,107,0,0.1)', border: '1px solid rgba(255,107,0,0.3)',
+              cursor: 'pointer', fontFamily: "'Barlow Condensed', sans-serif", fontSize: 16,
+              fontWeight: 800, letterSpacing: 1, textTransform: 'uppercase', borderRadius: 8,
+              width: '100%', marginBottom: 2, marginTop: 8
+            }}>
+              <span style={{ fontSize: 18 }}>💰</span> Go Pro
+            </button>
+
             {user ? (
               <>
                 <Link to="/profile" onClick={() => setMenuOpen(false)} style={{

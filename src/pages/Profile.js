@@ -3,7 +3,8 @@ import { useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { useSubscription } from '../hooks/useSubscription'
-import { User, Star, Clock, Shield, DollarSign, Zap, Crown } from 'lucide-react'
+import { User, Star, Clock, Shield, DollarSign, Zap, Crown, Trash2, AlertTriangle } from 'lucide-react'
+import toast from 'react-hot-toast'
 import './Profile.css'
 
 const BADGES = [
@@ -22,6 +23,9 @@ function formatMoney(minutes) {
   return `$${low}–$${high}`
 }
 
+// Detect if running inside native DockWarrior app
+const isNativeApp = () => navigator.userAgent.includes('DockWarriorApp')
+
 export default function Profile() {
   const { user, signOut } = useAuth()
   const { isPro, subscription } = useSubscription()
@@ -29,6 +33,9 @@ export default function Profile() {
   const [reviews, setReviews] = useState([])
   const [logs, setLogs] = useState([])
   const [loading, setLoading] = useState(true)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [deleteInput, setDeleteInput] = useState('')
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
     if (!user) { navigate('/login'); return }
@@ -43,6 +50,39 @@ export default function Profile() {
     setReviews(reviewsRes.data || [])
     setLogs(logsRes.data || [])
     setLoading(false)
+  }
+
+  const handleGoProClick = () => {
+    if (isNativeApp()) {
+      // Open in external browser — required by Apple guidelines
+      window.open('https://dockwarrior.com/pricing', '_blank')
+    } else {
+      navigate('/pricing')
+    }
+  }
+
+  const handleDeleteAccount = async () => {
+    if (deleteInput !== 'DELETE') {
+      toast.error('Type DELETE to confirm')
+      return
+    }
+    setDeleting(true)
+    try {
+      await supabase.from('reviews').delete().eq('user_id', user.id)
+      await supabase.from('detention_logs').delete().eq('user_id', user.id)
+      await supabase.from('subscriptions').delete().eq('user_id', user.id)
+      await supabase.from('community_posts').delete().eq('user_id', user.id)
+      await supabase.from('referrals').delete().eq('user_id', user.id)
+      await supabase.from('profiles').delete().eq('id', user.id)
+      await signOut()
+      toast.success('Account deleted successfully')
+      navigate('/')
+    } catch (err) {
+      console.error(err)
+      toast.error('Failed to delete account. Email contact@dockwarrior.com for help.')
+    } finally {
+      setDeleting(false)
+    }
   }
 
   const totalDetentionMinutes = logs.reduce((s, l) => s + (l.detention_minutes || 0), 0)
@@ -78,9 +118,9 @@ export default function Profile() {
         </div>
         <div className="profile-actions">
           {!isPro && (
-            <Link to="/pricing" className="btn btn-primary btn-sm">
+            <button className="btn btn-primary btn-sm" onClick={handleGoProClick}>
               <Zap size={14} /> Go Pro
-            </Link>
+            </button>
           )}
           {isPro && (
             <div className="pro-status-badge">
@@ -98,9 +138,9 @@ export default function Profile() {
         <div className="pro-upsell-bar">
           <Zap size={18} />
           <div>
-            <strong>Upgrade to Pro for $9/month</strong> — Unlimited reviews, PDF detention invoices, route alerts, safety SMS and more.
+            <strong>Upgrade to Pro for $14/month</strong> — Unlimited AI, PDF detention invoices, route alerts, safety SMS and more.
           </div>
-          <Link to="/pricing" className="btn btn-primary btn-sm">Upgrade Now</Link>
+          <button className="btn btn-primary btn-sm" onClick={handleGoProClick}>Upgrade Now</button>
         </div>
       )}
 
@@ -222,6 +262,76 @@ export default function Profile() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* DELETE ACCOUNT */}
+      <div className="section-header" style={{ marginTop: 40 }}>
+        <div className="accent-line" />
+        <h2>Account Settings</h2>
+      </div>
+      <div className="card" style={{ padding: 24, marginBottom: 40 }}>
+        <h3 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 16, fontWeight: 800, textTransform: 'uppercase', color: '#ef4444', marginBottom: 8 }}>
+          Delete Account
+        </h3>
+        <p style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 16, lineHeight: 1.5 }}>
+          Permanently delete your account and all associated data. This action cannot be undone.
+        </p>
+        <button
+          className="btn btn-danger btn-sm"
+          onClick={() => setShowDeleteConfirm(true)}
+        >
+          <Trash2 size={14} /> Delete My Account
+        </button>
+      </div>
+
+      {/* DELETE CONFIRMATION MODAL */}
+      {showDeleteConfirm && (
+        <div style={{
+          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 9999, padding: 20
+        }}>
+          <div style={{ background: 'var(--bg-card)', border: '1px solid #ef4444', borderRadius: 12, padding: 32, maxWidth: 440, width: '100%' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+              <AlertTriangle size={24} style={{ color: '#ef4444', flexShrink: 0 }} />
+              <h3 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 22, fontWeight: 900, textTransform: 'uppercase', color: '#ef4444' }}>
+                Delete Account
+              </h3>
+            </div>
+            <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: 20 }}>
+              This will permanently delete your account and all data including reviews, detention logs, and subscription history. This cannot be undone.
+            </p>
+            <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 8 }}>
+              Type <strong style={{ color: '#ef4444' }}>DELETE</strong> to confirm:
+            </p>
+            <input
+              className="form-input"
+              value={deleteInput}
+              onChange={e => setDeleteInput(e.target.value)}
+              placeholder="Type DELETE"
+              style={{ marginBottom: 16 }}
+              autoCapitalize="none"
+            />
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button
+                className="btn btn-secondary"
+                style={{ flex: 1 }}
+                onClick={() => { setShowDeleteConfirm(false); setDeleteInput('') }}
+                disabled={deleting}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn btn-danger"
+                style={{ flex: 1 }}
+                onClick={handleDeleteAccount}
+                disabled={deleting || deleteInput !== 'DELETE'}
+              >
+                {deleting ? 'Deleting...' : 'Delete Account'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
