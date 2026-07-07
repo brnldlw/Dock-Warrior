@@ -30,6 +30,7 @@ function StatCounter({ value, label }) {
 }
 
 export default function Home() {
+  const isNative = useIsNativeApp()
   const [worstDocks, setWorstDocks] = useState([])
   const [totalReviews, setTotalReviews] = useState(0)
 
@@ -243,3 +244,4 @@ export default function Home() {
     </div>
   )
 }
+
