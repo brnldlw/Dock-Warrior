@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useIsNativeApp } from '../hooks/useIsNativeApp'
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { Search, Clock, Star, Shield, ChevronRight, AlertTriangle, CheckCircle, XCircle, Trophy, Zap, Users, DollarSign } from 'lucide-react'
@@ -230,9 +231,11 @@ export default function Home() {
               <Link to="/login" className="btn btn-primary btn-lg">
                 Create Free Account
               </Link>
-              <Link to="/pricing" className="btn btn-secondary btn-lg">
-                See Pro Features
-              </Link>
+              {isNative ? (
+                <span style={{ fontSize: 13, color: 'var(--text-muted)', fontStyle: 'italic' }}>Visit dockwarrior.com to subscribe</span>
+              ) : (
+                <Link to="/pricing" className="btn btn-secondary btn-lg">See Pro Features</Link>
+              )}
             </div>
           </div>
         </div>

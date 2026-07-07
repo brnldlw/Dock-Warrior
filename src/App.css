@@ -443,3 +443,86 @@ select.form-input {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--orange);
 }
+
+/* ============================================================
+   IPAD SCALING FIXES — Apple App Store guideline 4
+   Ensures readable typography on iPad screens
+   ============================================================ */
+@media (min-width: 768px) and (max-width: 1200px) {
+  /* Base font size increase for iPad readability */
+  body {
+    font-size: 17px;
+  }
+
+  /* Page container max width on iPad */
+  .page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 88px 24px 40px;
+  }
+
+  /* Navigation readable on iPad */
+  .nav-link {
+    font-size: 15px;
+    padding: 10px 14px;
+  }
+
+  /* Cards more readable */
+  .card {
+    padding: 24px;
+  }
+
+  /* Barlow condensed headings — ensure minimum readable size */
+  h1, h2, h3 {
+    font-size: clamp(20px, 4vw, 36px);
+  }
+
+  /* Section headers */
+  .section-header h2 {
+    font-size: clamp(22px, 3.5vw, 32px);
+  }
+
+  /* Form inputs larger touch targets */
+  .form-input {
+    font-size: 16px;
+    padding: 14px 16px;
+    min-height: 48px;
+  }
+
+  /* Buttons larger touch targets */
+  .btn {
+    font-size: 15px;
+    padding: 14px 20px;
+    min-height: 48px;
+  }
+
+  /* Table text readable */
+  .admin-table th,
+  .admin-table td {
+    font-size: 14px;
+    padding: 12px 14px;
+  }
+
+  /* Message bubbles in Warrior */
+  .message-bubble {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* Quick prompt buttons */
+  .quick-prompt-btn {
+    font-size: 14px;
+    padding: 12px 16px;
+  }
+}
+
+/* Large iPad / iPad Pro */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .page {
+    max-width: 900px;
+  }
+
+  body {
+    font-size: 18px;
+  }
+}

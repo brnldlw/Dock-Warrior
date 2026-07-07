@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth'
 import { useSubscription } from '../hooks/useSubscription'
 import { FileText, Download, Send, Clock, DollarSign, Zap, AlertTriangle } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useIsNativeApp } from '../hooks/useIsNativeApp'
 import toast from 'react-hot-toast'
 import './DetentionInvoice.css'
 
@@ -31,6 +32,7 @@ function formatDuration(minutes) {
 export default function DetentionInvoice() {
   const { user } = useAuth()
   const { isPro } = useSubscription()
+  const isNative = useIsNativeApp()
   const [logs, setLogs] = useState([])
   const [selectedLog, setSelectedLog] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -284,7 +286,11 @@ ${form.notes ? `<div class="section"><h3>Notes</h3><div class="notes-box">${form
           <div>
             <strong>Pro Feature</strong> — Detention invoices are available to Pro members. Upgrade for $9/month.
           </div>
-          <Link to="/pricing" className="btn btn-primary btn-sm">Upgrade to Pro</Link>
+          {isNative ? (
+                <span style={{ fontSize: 13, color: 'var(--text-muted)', fontStyle: 'italic' }}>Visit dockwarrior.com to subscribe</span>
+              ) : (
+                <Link to="/pricing" className="btn btn-primary btn-sm">Upgrade to Pro</Link>
+              )}
         </div>
       )}
 
