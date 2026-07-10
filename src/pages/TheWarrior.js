@@ -3,7 +3,7 @@ import { useAuth } from '../hooks/useAuth'
 import { useSubscription } from '../hooks/useSubscription'
 import { supabase } from '../lib/supabase'
 import { Link } from 'react-router-dom'
-import { useIsNativeApp } from '../hooks/useIsNativeApp'
+import { useIsNativeApp, showNativePaywall } from '../hooks/useIsNativeApp'
 import { Send, Zap, RotateCcw, ChevronDown } from 'lucide-react'
 import './TheWarrior.css'
 
@@ -373,4 +373,6 @@ export default function TheWarrior() {
     </div>
   )
 }
+
+
 

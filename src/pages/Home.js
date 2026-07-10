@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { useIsNativeApp } from '../hooks/useIsNativeApp'
+import { useIsNativeApp, showNativePaywall } from '../hooks/useIsNativeApp'
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { Search, Clock, Star, Shield, ChevronRight, AlertTriangle, CheckCircle, XCircle, Trophy, Zap, Users, DollarSign } from 'lucide-react'
@@ -244,4 +244,5 @@ export default function Home() {
     </div>
   )
 }
+
 
