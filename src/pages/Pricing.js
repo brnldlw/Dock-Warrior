@@ -3,6 +3,7 @@ import { useAuth } from '../hooks/useAuth'
 import { useSubscription } from '../hooks/useSubscription'
 import { CheckCircle, Shield, Zap, AlertTriangle, Crown } from 'lucide-react'
 import './Pricing.css'
+import { useIsNativeApp } from '../hooks/useIsNativeApp'
 
 const FREE_FEATURES = [
   'Search any dock or facility',
@@ -43,6 +44,18 @@ const FLEET_FEATURES = [
 const STRIPE_LINK = 'https://buy.stripe.com/eVq8wO6fU0mR9Xd0aj24001'
 
 export default function Pricing() {
+  const isNative = useIsNativeApp()
+  if (isNative) {
+    return (
+      <div className="page" style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "80vh", textAlign: "center", padding: "40px 20px" }}>
+        <div>
+          <h2 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 28, fontWeight: 900, textTransform: "uppercase", marginBottom: 16 }}>Go Pro</h2>
+          <p style={{ color: "var(--text-secondary)", fontSize: 16, lineHeight: 1.6, marginBottom: 24 }}>Subscribe to DockWarrior Pro at dockwarrior.com to unlock unlimited AI, detention invoicing, load calculator, and more.</p>
+          <p style={{ color: "var(--orange)", fontSize: 14, fontWeight: 600 }}>$14/month · Cancel anytime</p>
+        </div>
+      </div>
+    )
+  }
   const { user } = useAuth()
   const { isPro } = useSubscription()
   const [searchParams] = useSearchParams()
