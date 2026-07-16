@@ -45,6 +45,9 @@ const STRIPE_LINK = 'https://buy.stripe.com/eVq8wO6fU0mR9Xd0aj24001'
 
 export default function Pricing() {
   const isNative = useIsNativeApp()
+  const { user } = useAuth()
+  const { isPro } = useSubscription()
+  const [searchParams] = useSearchParams()
   if (isNative) {
     return (
       <div className="page" style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "80vh", textAlign: "center", padding: "40px 20px" }}>
@@ -56,9 +59,6 @@ export default function Pricing() {
       </div>
     )
   }
-  const { user } = useAuth()
-  const { isPro } = useSubscription()
-  const [searchParams] = useSearchParams()
 
   const handleProClick = () => {
     if (!user) { window.location.href = '/login'; return }
