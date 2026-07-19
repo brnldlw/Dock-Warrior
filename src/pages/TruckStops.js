@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
+import { useIsNativeApp, showNativePaywall } from '../hooks/useIsNativeApp'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { useSubscription } from '../hooks/useSubscription'
@@ -86,6 +87,7 @@ function StopCard({ stop, onClick }) {
 export default function TruckStops() {
   const { user } = useAuth()
   const { isPro } = useSubscription()
+  const isNative = useIsNativeApp()
   const [stops, setStops] = useState([])
   const [filtered, setFiltered] = useState([])
   const [loading, setLoading] = useState(true)
@@ -371,9 +373,9 @@ export default function TruckStops() {
           <div className="review-action-bar">
             <h2 className="reviews-title">Reviews <span className="review-count-badge">{reviews.length}</span></h2>
             {!isPro ? (
-              <Link to="/pricing" className="btn btn-secondary btn-sm">
-                <Zap size={14} /> Pro to Review
-              </Link>
+              isNative
+                ? <button className="btn btn-secondary btn-sm" onClick={showNativePaywall}><Zap size={14} /> Pro to Review</button>
+                : <Link to="/pricing" className="btn btn-secondary btn-sm"><Zap size={14} /> Pro to Review</Link>
             ) : (
               <button className="btn btn-primary" onClick={() => setShowForm(!showForm)}>
                 <Plus size={16} /> {showForm ? 'Cancel' : 'Add Review'}
@@ -384,7 +386,9 @@ export default function TruckStops() {
           {!isPro && (
             <div className="pro-gate-banner">
               <Zap size={16} />
-              <span>Free members can read reviews. <Link to="/pricing" style={{ color: 'var(--orange)' }}>Upgrade to Pro</Link> to submit reviews, see full details, and access all ratings.</span>
+              <span>Free members can read reviews. {isNative
+                ? <button style={{background:'none',border:'none',color:'var(--orange)',cursor:'pointer',fontSize:14,fontWeight:600}} onClick={showNativePaywall}>⚔ Upgrade to Pro</button>
+                : <Link to="/pricing">Upgrade to Pro</Link>} to submit reviews, see full details, and access all ratings.</span>
             </div>
           )}
 

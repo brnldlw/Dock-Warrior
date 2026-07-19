@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 import { useSubscription } from '../hooks/useSubscription'
 import { Link } from 'react-router-dom'
+import { useIsNativeApp, showNativePaywall } from '../hooks/useIsNativeApp'
 import { MapPin, Navigation, AlertTriangle, CheckCircle, Clock, Star, Fuel, ChevronRight, Zap, Search } from 'lucide-react'
 import toast from 'react-hot-toast'
 import './RouteIntelligence.css'
@@ -31,6 +32,7 @@ function RiskBadge({ rating }) {
 
 export default function RouteIntelligence() {
   const { isPro } = useSubscription()
+  const isNative = useIsNativeApp()
   const [origin, setOrigin] = useState('')
   const [destination, setDestination] = useState('')
   const [loading, setLoading] = useState(false)
@@ -183,7 +185,9 @@ export default function RouteIntelligence() {
         <div className="route-pro-banner">
           <Zap size={18} />
           <div><strong>Pro Feature</strong> — Route Intelligence is available to Pro members. See every facility and truck stop on your route before you leave.</div>
-          <Link to="/pricing" className="btn btn-primary btn-sm">Upgrade to Pro — $12/mo</Link>
+          {isNative
+                ? <button style={{background:'none',border:'none',color:'var(--orange)',cursor:'pointer',fontSize:14,fontWeight:600}} onClick={showNativePaywall}>⚔ Upgrade to Pro</button>
+                : <Link to="/pricing" className="btn btn-primary btn-sm">Upgrade to Pro — $12/mo</Link>}
         </div>
       )}
 
@@ -382,7 +386,10 @@ export default function RouteIntelligence() {
           <Navigation size={64} style={{ color: 'var(--text-muted)', marginBottom: 20 }} />
           <h3>Enter a route to get started</h3>
           <p>See every dock and truck stop along your lane — rated by drivers who've been there.</p>
-          {!isPro && <Link to="/pricing" className="btn btn-primary" style={{ marginTop: 20 }}>Upgrade to Pro to Use Route Intelligence</Link>}
+          {!isPro && (isNative
+                ? <button style={{background:'none',border:'none',color:'var(--orange)',cursor:'pointer',fontSize:14,fontWeight:600}} onClick={showNativePaywall}>⚔ Upgrade to Pro</button>
+                : <Link to="/pricing" className="btn btn-primary">Upgrade to Pro to Use Route Intelligence</Link>
+              )}
         </div>
       )}
     </div>

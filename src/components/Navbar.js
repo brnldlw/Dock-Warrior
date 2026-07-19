@@ -1,4 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useIsNativeApp, showNativePaywall } from '../hooks/useIsNativeApp'
 import { useAuth } from '../hooks/useAuth'
 import { Shield, Search, Clock, User, LogOut, Menu, X, Trophy, Star, DollarSign, Plus, FileText, Navigation, Fuel, Calculator, MessageSquare, AlertTriangle, ChevronDown, Mail, Sword } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
@@ -38,6 +39,7 @@ export default function Navbar() {
   const { user, signOut } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
+  const isNative = useIsNativeApp()
   const [menuOpen, setMenuOpen] = useState(false)
 
   const handleSignOut = async () => {
@@ -86,9 +88,9 @@ export default function Navbar() {
             <Link to="/warrior" className={`nav-link nav-warrior ${p === '/warrior' ? 'active' : ''}`}>
             ⚔ The Warrior
           </Link>
-          <Link to="/pricing" className={`nav-link nav-pro ${p === '/pricing' ? 'active' : ''}`}>
+          {!isNative && <Link to="/pricing" className={`nav-link nav-pro ${p === '/pricing' ? 'active' : ''}`}>
               <DollarSign size={16} /> Go Pro
-            </Link>
+            </Link>}
             {user ? (
               <>
                 <Link to="/profile" className={`nav-link ${p === '/profile' ? 'active' : ''}`}>
@@ -117,9 +119,9 @@ export default function Navbar() {
               </Link>
             ))}
             <div className="mobile-nav-section-label">Account</div>
-            <Link to="/pricing" className="nav-link nav-pro" onClick={() => setMenuOpen(false)}>
+            {!isNative && <Link to="/pricing" className="nav-link nav-pro" onClick={() => setMenuOpen(false)}>
               <DollarSign size={16} /> Go Pro
-            </Link>
+            </Link>}
             {user ? (
               <>
                 <Link to="/profile" className={`nav-link ${p === '/profile' ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>

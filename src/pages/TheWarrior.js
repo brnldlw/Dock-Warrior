@@ -297,9 +297,9 @@ export default function TheWarrior() {
                   <div key={i} className="locked-feature">⚔ {f}</div>
                 ))}
               </div>
-              <Link to="/pricing" className="btn btn-primary btn-lg" style={{ marginTop: 24 }}>
-                <Zap size={18} /> Upgrade to Pro — $14/mo
-              </Link>
+              {isNative
+                ? <button className="btn btn-primary btn-lg" style={{ marginTop: 24 }} onClick={showNativePaywall}><Zap size={18} /> Upgrade to Pro</button>
+                : <Link to="/pricing" className="btn btn-primary btn-lg" style={{ marginTop: 24 }}><Zap size={18} /> Upgrade to Pro — $14/mo</Link>}
             </div>
           </div>
         )}
@@ -373,6 +373,3 @@ export default function TheWarrior() {
     </div>
   )
 }
-
-
-

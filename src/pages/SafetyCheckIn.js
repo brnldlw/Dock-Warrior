@@ -3,6 +3,7 @@ import { useAuth } from '../hooks/useAuth'
 import { useSubscription } from '../hooks/useSubscription'
 import { Shield, Clock, CheckCircle, AlertTriangle, Bell, User, Zap, RotateCcw } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useIsNativeApp, showNativePaywall } from '../hooks/useIsNativeApp'
 import toast from 'react-hot-toast'
 import './SafetyCheckIn.css'
 
@@ -36,6 +37,7 @@ function clearTimerState() {
 export default function SafetyCheckIn() {
   const { user } = useAuth()
   const { isPro } = useSubscription()
+  const isNative = useIsNativeApp()
   const [contactName, setContactName] = useState(() => localStorage.getItem('dw_contact_name') || '')
   const [contactPhone, setContactPhone] = useState(() => localStorage.getItem('dw_contact_phone') || '')
   const [timerMinutes, setTimerMinutes] = useState(60)
@@ -189,7 +191,9 @@ export default function SafetyCheckIn() {
         <div className="safety-pro-banner">
           <Zap size={18} />
           <div><strong>Pro Feature — SMS Alerts</strong> — Free users get the timer. Pro members get automatic SMS to their emergency contact when the timer expires.</div>
-          <Link to="/pricing" className="btn btn-primary btn-sm">Upgrade to Pro</Link>
+          {isNative
+                ? <button style={{background:'none',border:'none',color:'var(--orange)',cursor:'pointer',fontSize:14,fontWeight:600}} onClick={showNativePaywall}>⚔ Upgrade to Pro</button>
+                : <Link to="/pricing" className="btn btn-primary btn-sm">Upgrade to Pro</Link>}
         </div>
       )}
 

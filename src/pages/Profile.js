@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { useIsNativeApp, showNativePaywall } from '../hooks/useIsNativeApp'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { useSubscription } from '../hooks/useSubscription'
@@ -30,6 +31,7 @@ export default function Profile() {
   const { user, signOut } = useAuth()
   const { isPro, subscription } = useSubscription()
   const navigate = useNavigate()
+  const isNative = useIsNativeApp()
   const [reviews, setReviews] = useState([])
   const [logs, setLogs] = useState([])
   const [loading, setLoading] = useState(true)
@@ -53,9 +55,8 @@ export default function Profile() {
   }
 
   const handleGoProClick = () => {
-    if (isNativeApp()) {
-      // Open in external browser — required by Apple guidelines
-      window.open('https://dockwarrior.com/pricing', '_blank')
+    if (isNative) {
+      showNativePaywall()
     } else {
       navigate('/pricing')
     }

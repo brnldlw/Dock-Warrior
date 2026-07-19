@@ -235,7 +235,9 @@ export default function Home() {
               {isNative ? (
                 <span style={{ fontSize: 13, color: 'var(--text-muted)', fontStyle: 'italic' }}>Visit dockwarrior.com to subscribe</span>
               ) : (
-                <Link to="/pricing" className="btn btn-secondary btn-lg">See Pro Features</Link>
+                isNative
+                ? <button style={{background:'none',border:'none',color:'var(--orange)',cursor:'pointer',fontSize:14,fontWeight:600}} onClick={showNativePaywall}>⚔ Upgrade to Pro</button>
+                : <Link to="/pricing" className="btn btn-secondary btn-lg">See Pro Features</Link>
               )}
             </div>
           </div>
@@ -244,5 +246,3 @@ export default function Home() {
     </div>
   )
 }
-
-

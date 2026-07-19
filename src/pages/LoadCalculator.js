@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useSubscription } from '../hooks/useSubscription'
 import { Link } from 'react-router-dom'
+import { useIsNativeApp, showNativePaywall } from '../hooks/useIsNativeApp'
 import { DollarSign, Truck, Fuel, Zap, TrendingUp, TrendingDown, AlertTriangle, CheckCircle, Calculator, Clock } from 'lucide-react'
 import './LoadCalculator.css'
 
@@ -27,6 +28,7 @@ function ResultRow({ label, value, color, bold, indent }) {
 
 export default function LoadCalculator() {
   const { isPro } = useSubscription()
+  const isNative = useIsNativeApp()
 
   const [form, setForm] = useState({
     load_rate: '',
@@ -191,7 +193,9 @@ export default function LoadCalculator() {
             <div className="calc-pro-gate">
               <Zap size={16} />
               <span>
-                <Link to="/pricing" style={{ color: 'var(--orange)' }}>Upgrade to Pro</Link> to add detention pay, maintenance reserve, insurance costs, and SE tax estimate.
+                {isNative
+                ? <button style={{background:'none',border:'none',color:'var(--orange)',cursor:'pointer',fontSize:14,fontWeight:600}} onClick={showNativePaywall}>⚔ Upgrade to Pro</button>
+                : <Link to="/pricing">Upgrade to Pro</Link>} to add detention pay, maintenance reserve, insurance costs, and SE tax estimate.
               </span>
             </div>
           )}
@@ -277,7 +281,9 @@ export default function LoadCalculator() {
                     <strong>Get the full picture with Pro</strong>
                     <p>Add detention pay, maintenance costs, insurance, and SE tax estimate for a true after-tax profit number.</p>
                   </div>
-                  <Link to="/pricing" className="btn btn-primary btn-sm">Upgrade — $12/mo</Link>
+                  {isNative
+                ? <button style={{background:'none',border:'none',color:'var(--orange)',cursor:'pointer',fontSize:14,fontWeight:600}} onClick={showNativePaywall}>⚔ Upgrade to Pro</button>
+                : <Link to="/pricing" className="btn btn-primary btn-sm">Upgrade — $12/mo</Link>}
                 </div>
               )}
             </>
