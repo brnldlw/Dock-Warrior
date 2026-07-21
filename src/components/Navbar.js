@@ -104,7 +104,8 @@ export default function Navbar() {
           zIndex: 9999, display: 'flex', flexDirection: 'column',
           background: '#0d0d0d', overflowY: 'auto', paddingTop: '64px'
         }}>
-          <div style={{ padding: '16px' }}>
+          <button onClick={() => setMenuOpen(false)} style={{ position: 'fixed', top: 20, right: 20, zIndex: 10000, background: 'none', border: '1px solid #444', borderRadius: 8, color: '#fff', fontSize: 18, cursor: 'pointer', padding: '6px 12px' }}>✕ Close</button>
+          <div style={{ padding: '16px', marginTop: 8 }}>
             {allLinks.map((item, i) => {
               if (item.section) {
                 return (
