@@ -454,10 +454,8 @@ select.form-input {
     font-size: 17px;
   }
 
-  /* Page container max width on iPad */
+  /* Page padding on iPad (top padding clears the fixed navbar) */
   .page {
-    max-width: 760px;
-    margin: 0 auto;
     padding: 88px 24px 40px;
   }
 
@@ -518,10 +516,6 @@ select.form-input {
 
 /* Large iPad / iPad Pro */
 @media (min-width: 1024px) and (max-width: 1366px) {
-  .page {
-    max-width: 900px;
-  }
-
   body {
     font-size: 18px;
   }
