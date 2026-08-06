@@ -7,6 +7,7 @@ import './Login.css'
 
 export default function Login() {
   const [mode, setMode] = useState('signin')
+  const [termsAgreed, setTermsAgreed] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [fullName, setFullName] = useState('')

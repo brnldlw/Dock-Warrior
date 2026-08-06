@@ -1,34 +1,23 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
-import { MessageSquare, ThumbsUp, AlertTriangle, Clock, MapPin, Truck, DollarSign, Shield, Plus, RefreshCw, Filter } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { MapPin, ThumbsUp, Flag, AlertTriangle } from 'lucide-react'
 import toast from 'react-hot-toast'
 import './CommunityFeed.css'
 
 const CATEGORIES = [
-  { id: 'all', label: 'All', icon: <MessageSquare size={14} /> },
-  { id: 'alert', label: 'Road Alert', icon: <AlertTriangle size={14} /> },
-  { id: 'dock', label: 'Dock Intel', icon: <Truck size={14} /> },
-  { id: 'broker', label: 'Broker Watch', icon: <DollarSign size={14} /> },
-  { id: 'weather', label: 'Weather', icon: <Clock size={14} /> },
-  { id: 'safety', label: 'Safety', icon: <Shield size={14} /> },
-  { id: 'general', label: 'General', icon: <MessageSquare size={14} /> },
+  { id: 'alert', label: 'Road Alert', icon: '🚨', color: 'badge-red' },
+  { id: 'dock', label: 'Dock Intel', icon: '🏭', color: 'badge-orange' },
+  { id: 'broker', label: 'Broker Watch', icon: '⚖️', color: 'badge-yellow' },
+  { id: 'weather', label: 'Weather', icon: '🌩️', color: 'badge-blue' },
+  { id: 'safety', label: 'Safety', icon: '🛡️', color: 'badge-green' },
+  { id: 'general', label: 'General', icon: '💬', color: 'badge-gray' },
 ]
 
-const CATEGORY_COLORS = {
-  alert: 'badge-red',
-  dock: 'badge-orange',
-  broker: 'badge-yellow',
-  weather: 'badge-blue',
-  safety: 'badge-green',
-  general: 'badge-gray',
-}
+const CATEGORY_COLORS = Object.fromEntries(CATEGORIES.map(c => [c.id, c.color]))
 
-const US_STATES = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY']
-
-function timeAgo(date) {
-  const seconds = Math.floor((new Date() - new Date(date)) / 1000)
+function timeAgo(ts) {
+  const seconds = Math.floor((Date.now() - new Date(ts)) / 1000)
   if (seconds < 60) return 'just now'
   if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`
   if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`
@@ -38,11 +27,11 @@ function timeAgo(date) {
 export default function CommunityFeed() {
   const { user } = useAuth()
   const [posts, setPosts] = useState([])
-  const [loading, setLoading] = useState(true)
   const [posting, setPosting] = useState(false)
-  const [showForm, setShowForm] = useState(false)
-  const [activeCategory, setActiveCategory] = useState('all')
   const [userUpvotes, setUserUpvotes] = useState(new Set())
+  const [filter, setFilter] = useState('all')
+  const [reportedPosts, setReportedPosts] = useState(new Set())
+  const [blockedUsers, setBlockedUsers] = useState(new Set())
   const [form, setForm] = useState({
     content: '',
     category: 'general',
@@ -51,11 +40,19 @@ export default function CommunityFeed() {
 
   useEffect(() => {
     fetchPosts()
-    if (user) fetchUserUpvotes()
-
-    // Auto refresh every 60 seconds
-    const interval = setInterval(fetchPosts, 60000)
+    const interval = setInterval(fetchPosts, 30000)
     return () => clearInterval(interval)
+  }, [])
+
+  useEffect(() => {
+    if (!user) return
+    supabase
+      .from('post_upvotes')
+      .select('post_id')
+      .eq('user_id', user.id)
+      .then(({ data }) => {
+        setUserUpvotes(new Set((data || []).map(u => u.post_id)))
+      })
   }, [user])
 
   const fetchPosts = async () => {
@@ -65,15 +62,6 @@ export default function CommunityFeed() {
       .order('created_at', { ascending: false })
       .limit(100)
     setPosts(data || [])
-    setLoading(false)
-  }
-
-  const fetchUserUpvotes = async () => {
-    const { data } = await supabase
-      .from('post_upvotes')
-      .select('post_id')
-      .eq('user_id', user.id)
-    setUserUpvotes(new Set((data || []).map(u => u.post_id)))
   }
 
   const handlePost = async (e) => {
@@ -85,14 +73,14 @@ export default function CommunityFeed() {
     try {
       const { error } = await supabase.from('community_posts').insert({
         user_id: user.id,
-        driver_name: user.user_metadata?.full_name || 'Anonymous Driver',
+        driver_name: user.user_metadata?.full_name || 'Driver',
         content: form.content.trim(),
         category: form.category,
-        state: form.state || null
+        state: form.state || null,
+        upvotes: 0
       })
       if (error) throw error
       toast.success('Posted!')
-      setShowForm(false)
       setForm({ content: '', category: 'general', state: '' })
       fetchPosts()
     } catch {
@@ -105,8 +93,6 @@ export default function CommunityFeed() {
   const handleUpvote = async (post) => {
     if (!user) { toast.error('Sign in to upvote'); return }
     const hasUpvoted = userUpvotes.has(post.id)
-
-    // Optimistic update
     setPosts(prev => prev.map(p =>
       p.id === post.id ? { ...p, upvotes: p.upvotes + (hasUpvoted ? -1 : 1) } : p
     ))
@@ -115,130 +101,117 @@ export default function CommunityFeed() {
       hasUpvoted ? next.delete(post.id) : next.add(post.id)
       return next
     })
-
-    try {
-      if (hasUpvoted) {
-        await supabase.from('post_upvotes').delete()
-          .eq('post_id', post.id).eq('user_id', user.id)
-        await supabase.from('community_posts').update({ upvotes: Math.max(0, post.upvotes - 1) }).eq('id', post.id)
-      } else {
-        await supabase.from('post_upvotes').insert({ post_id: post.id, user_id: user.id })
-        await supabase.from('community_posts').update({ upvotes: post.upvotes + 1 }).eq('id', post.id)
-      }
-    } catch {
-      // Revert on error
-      fetchPosts()
-      if (user) fetchUserUpvotes()
+    if (hasUpvoted) {
+      await supabase.from('post_upvotes').delete()
+        .eq('user_id', user.id).eq('post_id', post.id)
+      await supabase.from('community_posts').update({ upvotes: post.upvotes - 1 }).eq('id', post.id)
+    } else {
+      await supabase.from('post_upvotes').insert({ user_id: user.id, post_id: post.id })
+      await supabase.from('community_posts').update({ upvotes: post.upvotes + 1 }).eq('id', post.id)
     }
   }
 
-  const filtered = activeCategory === 'all'
-    ? posts
-    : posts.filter(p => p.category === activeCategory)
+  const handleReport = async (post) => {
+    if (!user) { toast.error('Sign in to report'); return }
+    if (reportedPosts.has(post.id)) { toast.error('Already reported'); return }
+    try {
+      await supabase.from('community_posts').update({
+        reported: true,
+        report_count: (post.report_count || 0) + 1
+      }).eq('id', post.id)
+      setReportedPosts(prev => new Set([...prev, post.id]))
+      toast.success('Post reported. Our team will review it within 24 hours.')
+    } catch {
+      toast.error('Failed to report')
+    }
+  }
 
-  const charCount = form.content.length
+  const handleBlock = async (post) => {
+    if (!user) { toast.error('Sign in to block'); return }
+    if (blockedUsers.has(post.user_id)) { toast.error('User already blocked'); return }
+    setBlockedUsers(prev => new Set([...prev, post.user_id]))
+    setPosts(prev => prev.filter(p => p.user_id !== post.user_id))
+    try {
+      await supabase.from('community_posts').update({ reported: true }).eq('user_id', post.user_id)
+    } catch {}
+    toast.success('User blocked and removed from your feed. Our team has been notified.')
+  }
+
+  const filtered = filter === 'all'
+    ? posts.filter(p => !blockedUsers.has(p.user_id))
+    : posts.filter(p => p.category === filter && !blockedUsers.has(p.user_id))
+
+  const US_STATES = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY']
 
   return (
     <div className="page">
       <div className="section-header">
         <div className="accent-line" />
-        <h2><MessageSquare size={28} style={{ verticalAlign: 'middle', marginRight: 8, color: 'var(--orange)' }} />Driver Feed</h2>
-        <p>Real-time alerts and intel from drivers on the road. No BS, no brokers, just drivers.</p>
+        <h2>Driver Feed</h2>
+        <p>Real-time alerts and intel from drivers on the road. By drivers, for drivers.</p>
+        <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>
+          By posting, you agree to our{' '}
+          <a href="https://dockwarrior.com/privacy" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--orange)' }}>Terms of Use</a>
+          {' '}— no objectionable or abusive content. Violations are removed within 24 hours.
+        </p>
       </div>
 
-      {/* POST BUTTON */}
-      <div className="feed-toolbar">
-        <div className="feed-categories">
-          {CATEGORIES.map(c => (
-            <button
-              key={c.id}
-              className={`feed-cat-btn ${activeCategory === c.id ? 'active' : ''}`}
-              onClick={() => setActiveCategory(c.id)}
-            >
-              {c.icon} {c.label}
-            </button>
-          ))}
-        </div>
-        <div className="feed-actions">
-          <button className="btn btn-secondary btn-sm" onClick={fetchPosts}>
-            <RefreshCw size={14} /> Refresh
+      {/* CATEGORY FILTER */}
+      <div className="feed-filters">
+        <button className={`filter-btn ${filter === 'all' ? 'active' : ''}`} onClick={() => setFilter('all')}>All</button>
+        {CATEGORIES.map(c => (
+          <button key={c.id} className={`filter-btn ${filter === c.id ? 'active' : ''}`} onClick={() => setFilter(c.id)}>
+            {c.icon} {c.label}
           </button>
-          {user ? (
-            <button className="btn btn-primary btn-sm" onClick={() => setShowForm(!showForm)}>
-              <Plus size={14} /> {showForm ? 'Cancel' : 'Post Alert'}
-            </button>
-          ) : (
-            <Link to="/login" className="btn btn-primary btn-sm">
-              Sign In to Post
-            </Link>
-          )}
-        </div>
+        ))}
       </div>
 
       {/* POST FORM */}
-      {showForm && (
-        <div className="card feed-form">
-          <form onSubmit={handlePost}>
-            <div className="grid-2" style={{ marginBottom: 12 }}>
-              <div className="form-group" style={{ marginBottom: 0 }}>
-                <label className="form-label">Category</label>
-                <select className="form-input" value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))}>
-                  {CATEGORIES.filter(c => c.id !== 'all').map(c => (
-                    <option key={c.id} value={c.id}>{c.label}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="form-group" style={{ marginBottom: 0 }}>
-                <label className="form-label">State (optional)</label>
-                <select className="form-input" value={form.state} onChange={e => setForm(f => ({ ...f, state: e.target.value }))}>
-                  <option value="">All States</option>
-                  {US_STATES.map(s => <option key={s} value={s}>{s}</option>)}
-                </select>
-              </div>
-            </div>
-            <div className="form-group" style={{ marginBottom: 8 }}>
-              <label className="form-label">
-                Your Alert
-                <span style={{ color: charCount > 450 ? 'var(--red)' : 'var(--text-muted)', marginLeft: 8, fontWeight: 400 }}>
-                  {charCount}/500
-                </span>
-              </label>
-              <textarea
-                className="form-input"
-                placeholder="What do other drivers need to know right now? Road closures, bad docks, broker issues, weather, anything..."
-                value={form.content}
-                onChange={e => setForm(f => ({ ...f, content: e.target.value }))}
-                rows={4}
-                maxLength={500}
-              />
-            </div>
-            <div className="feed-form-footer">
-              <span className="feed-form-hint">
-                <Shield size={12} /> Keep it factual and respectful. No personal attacks.
-              </span>
-              <button type="submit" className="btn btn-primary" disabled={posting || !form.content.trim()}>
-                {posting ? 'Posting...' : 'Post Alert'}
-              </button>
-            </div>
-          </form>
+      {user ? (
+        <form onSubmit={handlePost} className="card post-form">
+          <div className="post-form-row">
+            <select className="form-input" value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))}>
+              {CATEGORIES.map(c => <option key={c.id} value={c.id}>{c.icon} {c.label}</option>)}
+            </select>
+            <select className="form-input" value={form.state} onChange={e => setForm(f => ({ ...f, state: e.target.value }))}>
+              <option value="">All States</option>
+              {US_STATES.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+          <textarea
+            className="form-input post-textarea"
+            placeholder="Share a road alert, dock intel, broker warning, or anything drivers need to know..."
+            value={form.content}
+            onChange={e => setForm(f => ({ ...f, content: e.target.value }))}
+            rows={3}
+            maxLength={500}
+          />
+          <div className="post-form-footer">
+            <span className="char-count">{form.content.length}/500</span>
+            <button type="submit" className="btn btn-primary" disabled={posting || !form.content.trim()}>
+              {posting ? 'Posting...' : 'Post Alert'}
+            </button>
+          </div>
+        </form>
+      ) : (
+        <div className="card" style={{ padding: 20, textAlign: 'center', marginBottom: 20 }}>
+          <p style={{ color: 'var(--text-muted)', marginBottom: 12 }}>Sign in to post alerts and join the conversation.</p>
         </div>
       )}
 
-      {/* FEED */}
-      {loading ? (
-        <div className="loading-spinner"><div className="spinner" />Loading feed...</div>
-      ) : filtered.length === 0 ? (
+      {/* POSTS */}
+      {filtered.length === 0 ? (
         <div className="empty-state">
-          <MessageSquare size={48} style={{ color: 'var(--text-muted)', marginBottom: 16 }} />
           <h3>No posts yet</h3>
-          <p>Be the first warrior to post an alert.</p>
+          <p>Be the first to post an alert.</p>
         </div>
       ) : (
-        <div className="feed-list">
+        <div className="feed-posts">
           {filtered.map(post => {
             const hasUpvoted = userUpvotes.has(post.id)
             const catColor = CATEGORY_COLORS[post.category] || 'badge-gray'
             const catLabel = CATEGORIES.find(c => c.id === post.category)?.label || 'General'
+            const isReported = reportedPosts.has(post.id)
             return (
               <div key={post.id} className="feed-post card">
                 <div className="post-header">
@@ -253,7 +226,27 @@ export default function CommunityFeed() {
                       </span>
                     )}
                   </div>
-                  <div className="post-time">{timeAgo(post.created_at)}</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <div className="post-time">{timeAgo(post.created_at)}</div>
+                    {user && post.user_id !== user.id && (
+                      <>
+                        <button
+                          onClick={() => handleReport(post)}
+                          title="Report this post"
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', color: isReported ? 'var(--orange)' : 'var(--text-muted)', padding: 4 }}
+                        >
+                          <Flag size={13} />
+                        </button>
+                        <button
+                          onClick={() => handleBlock(post)}
+                          title="Block this user"
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: 4, fontSize: 12 }}
+                        >
+                          🚫
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
                 <p className="post-content">{post.content}</p>
                 <div className="post-footer">
